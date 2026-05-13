@@ -11,7 +11,7 @@ const certificates = [
     emoji: "🐍",
     color: "#00d4ff",
     type: "Programming",
-    image: "/pcap-certificate.pdf",
+    image: "/pcap-certificate.png",
   },
   {
     issuer: "Millennial Business Academy",
@@ -19,6 +19,7 @@ const certificates = [
     emoji: "🤖",
     color: "#7c3aed",
     type: "AI",
+    image: "/ai-automation-certificate.png",
   },
   {
     issuer: "Information Technology Specialist",
@@ -26,6 +27,7 @@ const certificates = [
     emoji: "🗄️",
     color: "#10b981",
     type: "Database",
+    image: "/databases-certificate.png",
   },
   {
     issuer: "Cisco Networking Academy Program",
@@ -33,6 +35,7 @@ const certificates = [
     emoji: "🔒",
     color: "#f59e0b",
     type: "Security",
+    image: "/ethical-hacker-certificate.png",
   },
   {
     issuer: "InnovateIT: Capstone Journeys & Research Exhibit",
@@ -40,6 +43,7 @@ const certificates = [
     emoji: "🎓",
     color: "#f472b6",
     type: "Research",
+    image: "/innovateit-certificate.png",
   },
   {
     issuer: "Cisco Networking Academy Program",
@@ -47,6 +51,7 @@ const certificates = [
     emoji: "💻",
     color: "#60a5fa",
     type: "Development",
+    image: "/devnet-associate-certificate.png",
   },
   {
     issuer: "Cisco Networking Academy Program",
@@ -54,6 +59,7 @@ const certificates = [
     emoji: "🌐",
     color: "#34d399",
     type: "Networking",
+    image: "/ccna-certificate.png",
   },
   {
     issuer: "Cisco Networking Academy Program",
@@ -61,6 +67,7 @@ const certificates = [
     emoji: "🛡️",
     color: "#fb923c",
     type: "Security",
+    image: "/cyber-threat-management-certificate.png",
   },
   {
     issuer: "Cisco Networking Academy Program",
@@ -68,6 +75,7 @@ const certificates = [
     emoji: "📡",
     color: "#a78bfa",
     type: "Networking",
+    image: "/packet-tracer-certificate.png",
   },
 ];
 
@@ -158,15 +166,32 @@ export default function Certificates() {
               {cert.image ? (
                 <div
                   onClick={() => setSelectedImage(cert.image)}
-                  className="mt-4 h-24 rounded-xl overflow-hidden border border-dashed opacity-80 hover:opacity-100 transition-opacity cursor-pointer group-hover:border-solid"
+                  className="mt-4 h-50 rounded-xl overflow-hidden border border-dashed opacity-80 hover:opacity-100 transition-opacity cursor-pointer group-hover:border-solid"
                   style={{ borderColor: cert.color }}
                 >
-                  <iframe
-                    src={cert.image}
-                    className="w-full h-full"
-                    style={{ pointerEvents: "none" }}
-                    title="Certificate Preview"
-                  />
+                  {cert.image.endsWith('.pdf') ? (
+                    <iframe
+                      src={cert.image}
+                      className="w-full h-full"
+                      style={{ 
+                        pointerEvents: "none",
+                        overflow: "hidden",
+                        scrollbarWidth: "none",
+                        msOverflowStyle: "none",
+                        transform: "scale(1.0)",
+                        transformOrigin: "top left"
+                      }}
+                      scrolling="no"
+                      title="Certificate Preview"
+                    />
+                  ) : (
+                    <img
+                      src={cert.image}
+                      alt={cert.title}
+                      className="w-full h-full object-cover"
+                      style={{ pointerEvents: "none" }}
+                    />
+                  )}
                 </div>
               ) : (
                 <div
@@ -216,12 +241,21 @@ export default function Certificates() {
             >
               <X size={20} />
             </button>
-            <iframe
-              src={selectedImage}
-              className="w-full h-full"
-              style={{ height: "85vh" }}
-              title="Certificate Full View"
-            />
+            {selectedImage.endsWith('.pdf') ? (
+              <iframe
+                src={selectedImage}
+                className="w-full h-full"
+                style={{ height: "85vh" }}
+                title="Certificate Full View"
+              />
+            ) : (
+              <img
+                src={selectedImage}
+                alt="Certificate Full View"
+                className="w-full h-full object-contain"
+                style={{ maxHeight: "75vh" }}
+              />
+            )}
           </div>
         </div>
       )}

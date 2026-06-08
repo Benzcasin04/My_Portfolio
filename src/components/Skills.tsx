@@ -7,13 +7,13 @@ const skillCategories = [
     title: "Web Development",
     icon: "🌐",
     color: "#00d4ff",
-    skills: ["TypeScript", "JavaScript"],
+    skills: ["TypeScript", "JavaScript", "Next.js", "React.js", "ShadCN", "Redux", "Tailwind"],
   },
   {
     title: "Backend Development",
     icon: "⚙️",
     color: "#7c3aed",
-    skills: ["Node.js", "Express", "Vite"],
+    skills: ["Node.js", "Express", "Vite", "Python", "FastAPI", "Pydantic Schema", "Alembic", "SQLAlchemy"],
   },
   {
     title: "Database Development",
@@ -133,8 +133,9 @@ export default function Skills() {
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             {[
-              "TypeScript", "JavaScript", "Node.js", "Express", "React.js",
-              "Vite", "MySQL", "PostgreSQL", "MongoDB", "HTML", "CSS",
+              "TypeScript", "JavaScript", "Next.js", "React.js", "ShadCN", "Redux", "Tailwind",
+              "Node.js", "Express", "Vite", "Python", "FastAPI", "Pydantic Schema", "Alembic", "SQLAlchemy",
+              "MySQL", "PostgreSQL", "MongoDB", "HTML", "CSS",
               "ESP8266", "Arduino IDE", "Git", "GitHub", "VS Code",
               "Antigravity", "Windsurf", "Claude AI",
             ].map((tech) => (

@@ -255,6 +255,7 @@ export default function Hero() {
               document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
             }}
             className="px-8 py-4 border border-border hover:border-accent/50 rounded-xl font-display font-semibold text-muted hover:text-text transition-all duration-300"
+            suppressHydrationWarning
           >
             Get in Touch
           </button>

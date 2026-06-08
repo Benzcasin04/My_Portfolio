@@ -238,6 +238,7 @@ export default function Certificates() {
             <button
               onClick={() => setSelectedImage(null)}
               className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+              suppressHydrationWarning
             >
               <X size={20} />
             </button>

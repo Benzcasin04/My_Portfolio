@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ExternalLink, Code2, ChevronDown, ChevronUp } from "lucide-react";
 import { useReveal } from "./useReveal";
+import { ImageModal } from "./ImageModal";
 
 const projects = [
   {
@@ -56,6 +57,10 @@ const projects = [
   {
     title: "Hotel Management System",
     emoji: "🏨",
+    gallery: [
+      { url: "/hotel-management-system.png", alt: "Hotel Management System - Home Page" },
+      { url: "/hotel-management-system-2.png", alt: "Hotel Management System - Rooms Page" }
+    ],  
     description:
       "A web-based application designed to streamline and automate hotel operations such as room reservations, guest management, check-in and check-out processes, booking records, and payment monitoring.",
     longDesc:
@@ -65,10 +70,39 @@ const projects = [
     gradient: "from-violet-500/20 to-purple-500/20",
     category: "Full Stack",
   },
+  {
+    title: "Worklog Reporting System",
+    gallery: [
+  { url: "/weeklog-dashboard.png", alt: "Worklog Reporting System - Dashboard" },
+  { url: "/weeklog-add-note.png", alt: "Worklog Reporting System - Add Note" },
+  { url: "/weeklog-report.png", alt: "Worklog Reporting System - Report" },
+],
+    description:
+      "Weeklog is a modern web-based productivity and reporting platform designed to help teams document, manage, and review weekly progress updates efficiently. The system provides a clean and intuitive interface where team members can submit weekly notes, track accomplishments, identify blockers, and monitor ongoing tasks in one centralized workspace.",
+    longDesc:
+      "The application features a comprehensive dashboard with real-time weekly statistics, contributor tracking, recent activity logs, searchable reports, and export functionality for Excel, PDF, and Word formats. Built with Next.js and TypeScript for a scalable front-end, ShadCN for UI components, Redux for state management, and Tailwind CSS for styling. The back-end is powered by Python FastAPI with Pydantic Schema for data validation, Alembic for database migrations, and SQLAlchemy as the ORM.",
+    tech: ["Next.js", "ShadCN", "Redux", "TypeScript", "Tailwind", "Python FastAPI", "Pydantic", "Alembic", "SQLAlchemy"],
+    color: "#06b6d4",
+    gradient: "from-cyan-500/20 to-sky-500/20",
+    category: "Full Stack",
+  },
 ];
 
-function ProjectCard({ project, index, revealed }: { project: typeof projects[0]; index: number; revealed: boolean }) {
+function ProjectCard({
+  project,
+  index,
+  revealed,
+  onImageClick,
+}: {
+  project: typeof projects[0];
+  index: number;
+  revealed: boolean;
+  onImageClick?: (images: { url: string; alt: string }[], startIndex: number) => void;
+}) {
   const [expanded, setExpanded] = useState(false);
+
+  // Get gallery (supports both with and without images)
+  const gallery = project.gallery || [];
 
   return (
     <div
@@ -87,17 +121,39 @@ function ProjectCard({ project, index, revealed }: { project: typeof projects[0]
 
       {/* Placeholder image area */}
       <div
-        className={`relative h-48 bg-gradient-to-br ${project.gradient} flex items-center justify-center overflow-hidden`}
+        className={`relative h-48 bg-gradient-to-br ${project.gradient} flex items-center justify-center overflow-hidden cursor-pointer group/image`}
+        onClick={() => {
+          if (gallery.length > 0 && onImageClick) {
+            onImageClick(gallery, 0);
+          }
+        }}
       >
-        <div className="text-7xl select-none">{project.emoji}</div>
+        {gallery.length > 0 ? (
+          <>
+            <img
+              src={gallery[0].url}
+              alt={gallery[0].alt}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover/image:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+              <div className="text-white opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 font-mono text-sm font-semibold">
+                {gallery.length > 1 ? "Click to view gallery" : "Click to expand"}
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="text-7xl select-none">{project.emoji}</div>
+        )}
         {/* Grid overlay */}
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `linear-gradient(${project.color}22 1px, transparent 1px), linear-gradient(90deg, ${project.color}22 1px, transparent 1px)`,
-            backgroundSize: "20px 20px",
-          }}
-        />
+        {gallery.length === 0 && (
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: `linear-gradient(${project.color}22 1px, transparent 1px), linear-gradient(90deg, ${project.color}22 1px, transparent 1px)`,
+              backgroundSize: "20px 20px",
+            }}
+          />
+        )}
         {/* Category badge */}
         <span
           className="absolute top-4 right-4 font-mono text-xs px-2 py-1 rounded-lg"
@@ -108,6 +164,7 @@ function ProjectCard({ project, index, revealed }: { project: typeof projects[0]
           }}
         >
           {project.category}
+          {gallery.length > 1 && <span className="ml-1">({gallery.length})</span>}
         </span>
       </div>
 
@@ -132,6 +189,7 @@ function ProjectCard({ project, index, revealed }: { project: typeof projects[0]
         <button
           onClick={() => setExpanded(!expanded)}
           className="flex items-center gap-1 text-xs font-mono text-muted hover:text-accent transition-colors mb-4"
+          suppressHydrationWarning
         >
           {expanded ? (
             <>
@@ -162,6 +220,23 @@ function ProjectCard({ project, index, revealed }: { project: typeof projects[0]
 
 export default function Projects() {
   const { ref, revealed } = useReveal();
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    images: [] as { url: string; alt: string }[],
+    currentIndex: 0,
+  });
+
+  const handleImageClick = (images: { url: string; alt: string }[], startIndex: number = 0) => {
+    setModalState({ isOpen: true, images, currentIndex: startIndex });
+  };
+
+  const closeModal = () => {
+    setModalState((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  const handleImageNavigate = (index: number) => {
+    setModalState((prev) => ({ ...prev, currentIndex: index }));
+  };
 
   return (
     <section
@@ -169,6 +244,14 @@ export default function Projects() {
       ref={ref as React.RefObject<HTMLElement>}
       className="relative py-32 px-6 overflow-hidden"
     >
+      <ImageModal
+        isOpen={modalState.isOpen}
+        images={modalState.images}
+        currentIndex={modalState.currentIndex}
+        onClose={closeModal}
+        onNavigate={handleImageNavigate}
+      />
+      
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent2/3 to-transparent pointer-events-none" />
 
       <div className="max-w-7xl mx-auto">
@@ -195,6 +278,7 @@ export default function Projects() {
               project={project}
               index={i}
               revealed={revealed}
+              onImageClick={handleImageClick}
             />
           ))}
         </div>

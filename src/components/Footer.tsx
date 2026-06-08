@@ -13,6 +13,7 @@ export default function Footer() {
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="font-mono text-xs text-muted hover:text-accent transition-colors"
+          suppressHydrationWarning
         >
           ↑ Back to top
         </button>

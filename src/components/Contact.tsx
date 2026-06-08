@@ -1,35 +1,60 @@
 "use client";
 
-import { useState } from "react";
-import { Send, MapPin, Mail, Github, Linkedin, Facebook, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Send, MapPin, Mail, Github, Linkedin, Facebook, CheckCircle, AlertCircle } from "lucide-react";
 import { useReveal } from "./useReveal";
+import emailjs from "@emailjs/browser";
+
+const SERVICE_ID = "service_rrvn1f3";
+const TEMPLATE_ID = "template_oxhnpb9";
+const PUBLIC_KEY = "ecM4zsHE8uLlZZsMC";
 
 export default function Contact() {
   const { ref, revealed } = useReveal();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    emailjs.init(PUBLIC_KEY);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    if (error) setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    // Simulate send
-    await new Promise((r) => setTimeout(r, 1500));
-    setSending(false);
-    setSent(true);
+    setError("");
+
+    try {
+      await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+        from_name: form.name,
+        name: form.name,
+        email: form.email,
+        message: form.message,
+      });
+      setSent(true);
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+      console.error(err);
+    } finally {
+      setSending(false);
+    }
   };
 
   const socials = [
-    { icon: Facebook, label: "Facebook", href: "https://facebook.com", color: "#1877f2" },
-    { icon: Mail, label: "Email", href: "mailto:benchaeron@email.com", color: "#ea4335" },
-    { icon: Github, label: "GitHub", href: "https://github.com", color: "#f0f6fc" },
-    { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com", color: "#0077b5" },
+    { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/benchaeron.casin", color: "#1877f2" },
+    { icon: Mail, label: "Email", href: "mailto:benchaeroncasin04@gmail.com", color: "#ea4335" },
+    { icon: Github, label: "GitHub", href: "https://github.com/Benzcasin04", color: "#f0f6fc" },
+    { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/aeron-casin-52599234b/", color: "#0077b5" },
   ];
 
   return (
@@ -77,8 +102,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="font-mono text-xs text-muted">Email</p>
-                    <a href="mailto:benchaeron@email.com" className="text-text hover:text-accent transition-colors font-body text-sm">
-                      benchaeron@email.com
+                    <a href="mailto:benchaeroncasin04@gmail.com" className="text-text hover:text-accent transition-colors font-body text-sm">
+                      benchaeroncasin04@gmail.com
                     </a>
                   </div>
                 </div>
@@ -125,8 +150,9 @@ export default function Contact() {
             className={`transition-all duration-700 delay-200 ${
               revealed ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
             }`}
+            suppressHydrationWarning
           >
-            {sent ? (
+            {mounted && sent ? (
               <div className="p-8 rounded-2xl border border-accent3/30 bg-accent3/5 text-center">
                 <CheckCircle size={48} className="text-accent3 mx-auto mb-4" />
                 <h3 className="font-display font-bold text-xl text-text mb-2">Message Sent!</h3>
@@ -136,12 +162,23 @@ export default function Contact() {
                 <button
                   onClick={() => { setSent(false); setForm({ name: "", email: "", message: "" }); }}
                   className="mt-6 font-mono text-sm text-accent hover:underline"
+                  suppressHydrationWarning
                 >
                   Send another message
                 </button>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="p-6 rounded-2xl border border-border bg-card/60 space-y-5">
+            ) : mounted ? (
+              <form
+                onSubmit={handleSubmit}
+                className="p-6 rounded-2xl border border-border bg-card/60 space-y-5"
+                suppressHydrationWarning
+              >
+                {error && (
+                  <div className="flex items-center gap-2 p-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 font-mono text-xs">
+                    <AlertCircle size={14} />
+                    {error}
+                  </div>
+                )}
                 <div>
                   <label className="font-mono text-xs text-muted mb-2 block">
                     Your Name
@@ -188,6 +225,7 @@ export default function Contact() {
                   type="submit"
                   disabled={sending}
                   className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-accent/10 border border-accent/30 text-accent font-display font-semibold hover:bg-accent/20 transition-all duration-200 disabled:opacity-50 glow-accent"
+                  suppressHydrationWarning
                 >
                   {sending ? (
                     <>
@@ -202,7 +240,7 @@ export default function Contact() {
                   )}
                 </button>
               </form>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

@@ -60,6 +60,7 @@ export default function Navbar() {
           <button
             onClick={() => scrollTo("#home")}
             className="font-display font-bold text-xl gradient-text-2 tracking-tight"
+            suppressHydrationWarning
           >
             BAC<span className="text-accent">.</span>
           </button>
@@ -76,6 +77,7 @@ export default function Navbar() {
                   className={`relative px-4 py-2 text-sm font-body font-medium transition-colors duration-200 rounded-lg group ${
                     isActive ? "text-accent" : "text-muted hover:text-text"
                   }`}
+                  suppressHydrationWarning
                 >
                   {isActive && (
                     <span className="absolute inset-0 bg-accent/10 rounded-lg" />
@@ -93,6 +95,7 @@ export default function Navbar() {
           <button
             className="lg:hidden text-muted hover:text-accent transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
+            suppressHydrationWarning
           >
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -124,6 +127,7 @@ export default function Navbar() {
               onClick={() => scrollTo(link.href)}
               className="text-left px-6 py-4 text-lg font-display font-medium text-muted hover:text-accent border border-border hover:border-accent/50 rounded-xl transition-all duration-200"
               style={{ animationDelay: `${i * 0.05}s` }}
+              suppressHydrationWarning
             >
               <span className="text-accent/50 font-mono text-sm mr-3">
                 0{i + 1}.
